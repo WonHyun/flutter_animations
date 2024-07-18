@@ -11,7 +11,7 @@ class AppleWatchPainter extends CustomPainter {
     required this.progress,
     required this.barColor,
     required this.backgroundBarColor,
-    this.thickness = 25,
+    required this.thickness,
   });
 
   @override
