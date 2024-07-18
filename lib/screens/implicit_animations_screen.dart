@@ -22,7 +22,6 @@ class _ImplicitAnimationsScreenState extends State<ImplicitAnimationsScreen> {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
         title: const Text("Implicit Animations"),
       ),
       body: Center(

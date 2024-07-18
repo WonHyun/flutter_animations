@@ -13,6 +13,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       title: "Flutter Animation Masterclass",
       theme: ThemeData(
+        appBarTheme: const AppBarTheme(centerTitle: true),
         colorScheme: const ColorScheme.light(
           primary: Colors.blue,
         ),

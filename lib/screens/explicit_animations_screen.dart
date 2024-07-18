@@ -107,7 +107,6 @@ class _ExplicitAnimationsScreenState extends State<ExplicitAnimationsScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
         title: const Text("Explicit Animations"),
       ),
       body: Center(
