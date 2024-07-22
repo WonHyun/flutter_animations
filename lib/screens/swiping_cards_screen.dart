@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import 'widgets/swipable_image_card.dart';
+
 class SwipingCardsScreen extends StatefulWidget {
   const SwipingCardsScreen({super.key});
 
@@ -31,6 +33,13 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
     end: 1.0,
   );
 
+  void _whenComplete() {
+    _position.value = 0;
+    setState(() {
+      _index = _index == 5 ? 1 : _index + 1;
+    });
+  }
+
   void _onHorizontalDragUpdate(DragUpdateDetails details) {
     _position.value += details.delta.dx;
   }
@@ -40,11 +49,13 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
     final dropZone = size.width + 100;
 
     if (_position.value.abs() >= bound) {
-      if (_position.value.isNegative) {
-        _position.animateTo(dropZone * -1);
-      } else {
-        _position.animateTo(dropZone);
-      }
+      final factor = _position.value.isNegative ? -1 : 1;
+      _position
+          .animateTo(
+            dropZone * factor,
+            curve: Curves.easeOut,
+          )
+          .whenComplete(_whenComplete);
     } else {
       _position.animateTo(
         0,
@@ -52,6 +63,8 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
       );
     }
   }
+
+  int _index = 1;
 
   @override
   void initState() {
@@ -84,15 +97,8 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
               Positioned(
                 top: 100,
                 child: Transform.scale(
-                  scale: scale,
-                  child: Material(
-                    elevation: 10,
-                    color: Colors.blue.shade100,
-                    child: SizedBox(
-                      width: size.width * 0.8,
-                      height: size.height * 0.5,
-                    ),
-                  ),
+                  scale: min(scale, 1.0),
+                  child: SwipableImageCard(index: _index == 5 ? 1 : _index + 1),
                 ),
               ),
               Positioned(
@@ -104,14 +110,7 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
                     offset: Offset(_position.value, 0),
                     child: Transform.rotate(
                       angle: angle,
-                      child: Material(
-                        elevation: 10,
-                        color: Colors.red.shade100,
-                        child: SizedBox(
-                          width: size.width * 0.8,
-                          height: size.height * 0.5,
-                        ),
-                      ),
+                      child: SwipableImageCard(index: _index),
                     ),
                   ),
                 ),
