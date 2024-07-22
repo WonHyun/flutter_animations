@@ -1,8 +1,14 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animations/screens/widgets/swipable_image_card.dart';
 
-import 'widgets/swipable_image_card.dart';
+import 'widgets/animate_icon_button.dart';
+
+enum Direction {
+  left,
+  right,
+}
 
 class SwipingCardsScreen extends StatefulWidget {
   const SwipingCardsScreen({super.key});
@@ -33,7 +39,7 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
     end: 1.0,
   );
 
-  void _whenComplete() {
+  void _whenSwipeComplete() {
     _position.value = 0;
     setState(() {
       _index = _index == 5 ? 1 : _index + 1;
@@ -46,22 +52,35 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
 
   void _onHorizontalDragEnd(DragEndDetails details) {
     final bound = size.width - 200;
-    final dropZone = size.width + 100;
 
     if (_position.value.abs() >= bound) {
-      final factor = _position.value.isNegative ? -1 : 1;
-      _position
-          .animateTo(
-            dropZone * factor,
-            curve: Curves.easeOut,
-          )
-          .whenComplete(_whenComplete);
+      _swipeCard(
+        _position.value.isNegative ? Direction.left : Direction.right,
+      );
     } else {
       _position.animateTo(
         0,
         curve: Curves.easeOut,
       );
     }
+  }
+
+  void _swipeCard(Direction direction) {
+    final dropZone = size.width + 100;
+    int factor;
+
+    switch (direction) {
+      case Direction.left:
+        factor = -1;
+      case Direction.right:
+        factor = 1;
+    }
+    _position
+        .animateTo(
+          dropZone * factor,
+          curve: Curves.easeOut,
+        )
+        .whenComplete(_whenSwipeComplete);
   }
 
   int _index = 1;
@@ -95,14 +114,14 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
             alignment: Alignment.topCenter,
             children: [
               Positioned(
-                top: 100,
+                top: 50,
                 child: Transform.scale(
                   scale: min(scale, 1.0),
                   child: SwipableImageCard(index: _index == 5 ? 1 : _index + 1),
                 ),
               ),
               Positioned(
-                top: 100,
+                top: 50,
                 child: GestureDetector(
                   onHorizontalDragUpdate: _onHorizontalDragUpdate,
                   onHorizontalDragEnd: _onHorizontalDragEnd,
@@ -114,6 +133,30 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
                     ),
                   ),
                 ),
+              ),
+              Positioned(
+                bottom: 50,
+                child: AnimatedBuilder(
+                    animation: _position,
+                    builder: (context, child) {
+                      return Row(
+                        children: [
+                          AnimateIconButton(
+                            icon: Icons.close,
+                            iconSize: 36,
+                            iconColor: Colors.red,
+                            onTap: () => _swipeCard(Direction.left),
+                          ),
+                          const SizedBox(width: 20),
+                          AnimateIconButton(
+                            icon: Icons.check,
+                            iconSize: 36,
+                            iconColor: Colors.green,
+                            onTap: () => _swipeCard(Direction.right),
+                          ),
+                        ],
+                      );
+                    }),
               ),
             ],
           );

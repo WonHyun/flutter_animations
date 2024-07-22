@@ -16,8 +16,8 @@ class SwipableImageCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(10),
       clipBehavior: Clip.hardEdge,
       child: SizedBox(
-        width: size.width * 0.8,
-        height: size.height * 0.5,
+        width: size.width * 0.7,
+        height: size.height * 0.6,
         child: Image.asset(
           "assets/covers/$index.jpg",
           fit: BoxFit.cover,
