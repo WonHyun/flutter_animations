@@ -4,28 +4,34 @@ class AnimateIconButton extends StatelessWidget {
   const AnimateIconButton({
     super.key,
     required this.icon,
-    required this.iconSize,
-    required this.iconColor,
     required this.onTap,
+    this.backgroundColor = Colors.white,
+    this.borderColor = Colors.white,
+    this.iconColor = Colors.black,
+    this.iconSize = 36,
+    this.paddingSize = 5,
   });
 
   final IconData icon;
-  final double iconSize;
-  final Color iconColor;
   final Function() onTap;
+  final Color backgroundColor;
+  final Color borderColor;
+  final Color iconColor;
+  final double iconSize;
+  final double paddingSize;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(5),
+        padding: EdgeInsets.all(paddingSize),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: Colors.white,
+          color: backgroundColor,
           border: Border.all(
             width: 5,
-            color: Colors.white,
+            color: borderColor,
           ),
           boxShadow: [
             BoxShadow(

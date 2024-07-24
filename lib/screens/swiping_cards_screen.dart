@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animations/screens/widgets/swipable_image_card.dart';
 
@@ -37,6 +38,21 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
   late final Tween<double> _scale = Tween(
     begin: 0.8,
     end: 1.0,
+  );
+
+  late final ColorTween _leftColor = ColorTween(
+    begin: Colors.white,
+    end: Colors.red,
+  );
+
+  late final ColorTween _rightColor = ColorTween(
+    begin: Colors.white,
+    end: Colors.green,
+  );
+
+  late final Tween<double> _buttonSize = Tween(
+    begin: 5.0,
+    end: 8.0,
   );
 
   void _whenSwipeComplete() {
@@ -109,14 +125,37 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
                   .transform((_position.value + size.width / 2) / size.width) *
               pi /
               180;
-          final scale = _scale.transform(_position.value.abs() / size.width);
+          final scale = _scale.transform(
+              clampDouble(_position.value.abs() / size.width, 0.0, 1.0));
+          final leftBackgroundColor = _position.value >= 0
+              ? Colors.white
+              : _leftColor.transform(
+                  clampDouble(_position.value.abs() / size.width, 0.0, 1.0));
+          final rightBackgroundColor = _position.value <= 0
+              ? Colors.white
+              : _rightColor.transform(
+                  clampDouble(_position.value.abs() / size.width, 0.0, 1.0));
+          final leftIconColor = _position.value >= 0
+              ? Colors.red
+              : _leftColor.transform(clampDouble(
+                  1 - (_position.value.abs() / size.width), 0.0, 1.0));
+          final rightIconColor = _position.value <= 0
+              ? Colors.green
+              : _rightColor.transform(clampDouble(
+                  1 - (_position.value.abs() / size.width), 0.0, 1.0));
+          final leftSize = _position.value >= 0
+              ? 5.0
+              : _buttonSize.transform(_position.value.abs() / size.width);
+          final rightSize = _position.value <= 0
+              ? 5.0
+              : _buttonSize.transform(_position.value.abs() / size.width);
           return Stack(
             alignment: Alignment.topCenter,
             children: [
               Positioned(
                 top: 50,
                 child: Transform.scale(
-                  scale: min(scale, 1.0),
+                  scale: scale,
                   child: SwipableImageCard(index: _index == 5 ? 1 : _index + 1),
                 ),
               ),
@@ -135,28 +174,26 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
                 ),
               ),
               Positioned(
+                left: 100,
                 bottom: 50,
-                child: AnimatedBuilder(
-                    animation: _position,
-                    builder: (context, child) {
-                      return Row(
-                        children: [
-                          AnimateIconButton(
-                            icon: Icons.close,
-                            iconSize: 36,
-                            iconColor: Colors.red,
-                            onTap: () => _swipeCard(Direction.left),
-                          ),
-                          const SizedBox(width: 20),
-                          AnimateIconButton(
-                            icon: Icons.check,
-                            iconSize: 36,
-                            iconColor: Colors.green,
-                            onTap: () => _swipeCard(Direction.right),
-                          ),
-                        ],
-                      );
-                    }),
+                child: AnimateIconButton(
+                  icon: Icons.close,
+                  iconColor: leftIconColor ?? Colors.red,
+                  backgroundColor: leftBackgroundColor ?? Colors.white,
+                  paddingSize: leftSize,
+                  onTap: () => _swipeCard(Direction.left),
+                ),
+              ),
+              Positioned(
+                right: 100,
+                bottom: 50,
+                child: AnimateIconButton(
+                  icon: Icons.check,
+                  iconColor: rightIconColor ?? Colors.green,
+                  backgroundColor: rightBackgroundColor ?? Colors.white,
+                  paddingSize: rightSize,
+                  onTap: () => _swipeCard(Direction.right),
+                ),
               ),
             ],
           );
