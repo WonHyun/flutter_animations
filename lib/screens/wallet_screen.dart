@@ -3,6 +3,12 @@ import 'package:flutter_animate/flutter_animate.dart';
 
 import 'widgets/credit_card.dart';
 
+final cardColors = [
+  Colors.purple,
+  Colors.black,
+  Colors.blue,
+];
+
 class WalletScreen extends StatefulWidget {
   const WalletScreen({super.key});
 
@@ -38,26 +44,20 @@ class _WalletScreenState extends State<WalletScreen> {
           onVerticalDragEnd: (_) => _onShrink(),
           child: Column(
             children: [
-              const CreditCard(bgColor: Colors.purple)
-                  .animate(
-                    delay: 1.5.seconds,
-                    target: _isExpanded ? 0 : 1,
+              for (var index = 0; index < cardColors.length; index++)
+                Hero(
+                  tag: "$index",
+                  child: CreditCard(
+                    index: index,
+                    isExpanded: _isExpanded,
                   )
-                  .flipV(end: 0.1),
-              const CreditCard(bgColor: Colors.black)
-                  .animate(
-                    delay: 1.5.seconds,
-                    target: _isExpanded ? 0 : 1,
-                  )
-                  .flipV(end: 0.1)
-                  .slideY(end: -0.8),
-              const CreditCard(bgColor: Colors.blue)
-                  .animate(
-                    delay: 1.5.seconds,
-                    target: _isExpanded ? 0 : 1,
-                  )
-                  .flipV(end: 0.1)
-                  .slideY(end: -0.8 * 2),
+                      .animate(
+                        delay: 1.5.seconds,
+                        target: _isExpanded ? 0 : 1,
+                      )
+                      .flipV(end: 0.1)
+                      .slideY(end: -0.8 * index),
+                ),
             ]
                 .animate(interval: 500.ms)
                 .fadeIn(begin: 0)
