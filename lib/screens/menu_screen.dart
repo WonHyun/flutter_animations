@@ -4,6 +4,7 @@ import 'package:flutter_animations/screens/explicit_animations_screen.dart';
 import 'package:flutter_animations/screens/implicit_animations_screen.dart';
 import 'package:flutter_animations/screens/music_player_screen.dart';
 import 'package:flutter_animations/screens/swiping_cards_screen.dart';
+import 'package:flutter_animations/screens/wallet_screen.dart';
 
 class MenuScreen extends StatelessWidget {
   const MenuScreen({super.key});
@@ -47,6 +48,10 @@ class MenuScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () => _goToPage(context, const MusicPlayerScreen()),
               child: const Text("Music Player"),
+            ),
+            ElevatedButton(
+              onPressed: () => _goToPage(context, const WalletScreen()),
+              child: const Text("Wallet"),
             ),
           ],
         ),
